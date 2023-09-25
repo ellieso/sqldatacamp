@@ -1,4 +1,5 @@
 ## datarian SQL 데이터 분석 캠프 실전반
+![image](https://github.com/ellieso/sqldatacamp/assets/83899219/10e699de-7189-45c6-84d9-4ad8cd15e5d7)
 - url : https://datarian.io/bootcamp/sql-advanced
 - 수강 시작일 : 9월 25일
 - 수강 완료일 :
