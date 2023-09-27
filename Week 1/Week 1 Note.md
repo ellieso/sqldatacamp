@@ -100,7 +100,7 @@ FROM
       SELECT day, SUM(total_bill) as total_bill
       FROM tips
       GROUP BY day
-    )
+    ) A
 ```
 
 8. FROM 절 서브쿼리2)
@@ -122,7 +122,7 @@ ON tips.day = A.day
 ORDER BY total_bill DESC
 ```
 
-9. SELEC절 서브쿼리
+9. SELECT절 서브쿼리
 - 사용데이터 : solvesql Waiters Tips
 - 문제 : 영수금액이 이 레스토랑의 전체 매출액에서 차지하는 비율을 소수 둘째자리까지 구하시오
 - 정답 :
@@ -132,4 +132,36 @@ SELECT tips.day
        , ROUND((total_bill / (SELECT SUM(total_bill) FROM tips)*100),2) AS pct
 FROM tips
 ORDER BY total_bill DESC
+```
+
+10. 서울북부지방법원 따릉이 정류장
+- 사용데이터 : solvesql 따릉이 자전거 이용현황
+- 문제 : 서울북부지방법원 정류소보다 북쪽에 있는 정류소 정보를 출력하시오
+- 정답 :
+```
+SELECT *
+FROM station
+WHERE lat > (
+              SELECT lat
+              FROM station
+              WHERE name = '서울북부지방법원'
+            )
+```
+
+11. 고액 영수증 찾기
+- 사용데이터 : solvesql Waiters Tips
+- 문제 : 결제금액이 가장 높았던 결제 내역만 출력하는 쿼리를 작성하시
+- 정답 :
+```
+SELECT tips.*
+FROM tips
+INNER JOIN
+          (
+            SELECT size
+                  , MAX(total_bill) as total_bill
+            FROM tips
+            GROUP BY size
+          ) A
+ON tips.total_bill = A.total_bill AND tips.size = A.size
+ORDER BY tips.size
 ```
