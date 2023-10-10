@@ -95,3 +95,83 @@ e) Referral (추천)
 ### “Retention 없는 Acquisition은 마케팅 예산 낭비”
 
 기존 사용자들이 우리 서비스를 잘 사용하고 있는지, 지속적으로 사용하는지 관찰하는 Retention 지표들은 다른 어떤 단계의 지표들보다 가장 먼저 분석되어야 합니다. 그래서 어떤 사람들은 AARRR을 RARRA로 불러요. 가장 먼저 달성되어야 하는 지표 순서대로 Retention → Activation → Referral → Revenue → Acquisition 이렇게요.
+
+## Cohort analysis
+
+1. 코호트 분석 (Cohort Analysis)이란?
+특정 기간 동안 공통된 특성이나 경험을 갖는 사용자 집단을 의미합니다. 첫방문, 캠페인 유입 등 특정 조건에 해당되는 사용자들을 그룹화하고 시간 흐름에 따른 행동 패턴을 추적합니다.  
+
+2. 코호트 분석이 중요한 이유
+   - 고객 유지율(Retention Rate) 분석
+     이커머스에서 고객 유입 못지않게 중요한 것은 바로 고객 유지율입니다. 한 번 방문했던 고객들이 단발성 방문에 그치지 않고 지속적으      로 사이트에 재방문하고 자연스럽게 구매로 연결되어야 하기 때문인데요. 코호트 분석은 고객의 이탈 시점을 분석하는 데 있어 탁월한       분석 지표입니다!
+   - 특정 고객 집단의 인사이트 발견  
+     코호트 분석에서는 방문 X 구매 X 유입 X 광고 등의 세그먼트 조건을 조합하여 특정 고객군을 선정하고 분석할 수 있습니다. 자유로운       조건을 조합할 수 있어 마케터가 얻을 수 있는 인사이트가 확장됩니다. 특정일의 구매자, 회원가입 고객, 캠페인 유입 고객, 재방문, 
+     재구매 주기와 같은 마케팅 현황을 진단해보세요. 문제점을 파악하고 효과적인 개선 전략을 세워볼 수 있습니다.
+     
+3. 코호트 분석을 통해 얻을 수 있는 인사이트
+- 고객 유지율
+- 고객 이탈률
+- PC 웹 / 모바일 웹 / 하이브리드 앱 사용자 유지율 
+- 시간 경과에 따른 마케팅 캠페인 효과 분석
+- 신규 회원가입자의 유지율
+- 유입 출처에 따른 고객 가치
+
+## 클래식 리텐션
+
+​클래식 리텐션은 유저들이 처음 서비스를 이용한 때를 기준으로 몇 일이 지난 시점에 얼마나 많은 사람들이 접속했는지를 계산하는 지표입니다. 클래식 리텐션은 매일 날짜를 기준으로 측정되기 때문에 Day-N 리텐션이라고 불리기도 합니다.  
+예를 들어 2022년 1월 22일에 처음 가입한 유저가 100명이 있다고 했을 때, 이들 중 7일이 지난 1월 29일에 60명이 접속을 했다면 Day 7 리텐션은 60%가 됩니다.  
+![image](https://github.com/ellieso/sqldatacamp/assets/83899219/e82aaf55-146f-4df8-a259-2329ad575dcd)
+
+- 사용데이터 : US E-commerce Records 2020
+- 문제 : 데이터를 바탕으로 리텐션 분석을 하시오
+- 정답 :
+```
+select first_order_month
+       , count(DISTINCT customer_id) as month0
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 1 month) = order_month
+                        THEN customer_id 
+                        END) as month1
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 2 month) = order_month
+                        THEN customer_id 
+                        END) as month2
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 3 month) = order_month
+                        THEN customer_id 
+                        END) as month3
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 4 month) = order_month
+                        THEN customer_id 
+                        END) as month4
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 5 month) = order_month
+                        THEN customer_id 
+                        END) as month5                      
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 6 month) = order_month
+                        THEN customer_id 
+                        END) as month6
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 7 month) = order_month
+                        THEN customer_id 
+                        END) as month7
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 8 month) = order_month
+                        THEN customer_id 
+                        END) as month8
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 9 month) = order_month
+                        THEN customer_id 
+                        END) as month9
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 10 month) = order_month
+                        THEN customer_id 
+                        END) as month10
+       , count(DISTINCT CASE WHEN DATE_ADD(first_order_month, INTERVAL 11 month) = order_month
+                        THEN customer_id 
+                        END) as month11
+
+FROM (
+        select r.customer_id
+              , r.order_id
+              , r.order_date
+              , DATE_FORMAT(r.order_date, '%Y-%m-01') as order_month
+              , c.first_order_date
+              , DATE_FORMAT(c.first_order_date, '%Y-%m-01') as first_order_month
+        from records r
+        inner join customer_stats c
+        on r.customer_id = c.customer_id
+      ) a
+group by first_order_month
+```
