@@ -14,3 +14,8 @@
         b. From절 서브쿼리 + With문<br>
         c. [심화]SELECT절 서브쿼리<br>
         d. [심화]Correlated Subque<br>
+
+  [Week 2 : 리텐션분석]<br>
+     1. AARRR + 코호트 분석<br>
+     2) 클래식 리텐션<br>
+     3) 롤링 리텐션<br>
